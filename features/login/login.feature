@@ -8,7 +8,7 @@ Scenario: Login com sucesso
     Então eu devo ser redirecionado para a página inicial
     And deve aparecer o username no usuário logado
 
-Scenario: Login com falha
+Scenario: Erro de login
     Given que eu estou na página de login
     When eu preencho o campo de username com usuario válido
     And o campo de senha inválida
