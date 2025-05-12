@@ -1,91 +1,79 @@
 # ==== SCHEMA: Criação do banco e tabelas ====
- 
-CREATE_DATABASE_AND_TABLES = """
-CREATE DATABASE IF NOT EXISTS automacao_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE automacao_db;
- 
+
+CREATE_DATABASE = """
+CREATE DATABASE IF NOT EXISTS banco_teste_automacao;
+USE banco_teste_automacao;
+"""
+
+CREATE_TABLES_USUARIOS = """ 
 CREATE TABLE IF NOT EXISTS usuarios (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    status ENUM('ativo', 'inativo') DEFAULT 'ativo',
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    id VARCHAR(20) PRIMARY KEY,
+    nome VARCHAR(100),
+    email VARCHAR(100),
+    username VARCHAR(50),
+    senha VARCHAR(50)
 );
- 
-CREATE TABLE IF NOT EXISTS produtos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    preco DECIMAL(10,2) NOT NULL,
-    estoque INT NOT NULL,
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
- 
+"""
+
+CREATE_TABLES_PEDIDOS = """ 
 CREATE TABLE IF NOT EXISTS pedidos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id INT NOT NULL,
-    total DECIMAL(10,2) NOT NULL,
-    status ENUM('pendente', 'concluido', 'cancelado') DEFAULT 'pendente',
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    numero_pedido VARCHAR(50) PRIMARY KEY,
+    usuario_id VARCHAR(20),
+    codigo_rastreamento VARCHAR(100),
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
 """
- 
-# ==== USUÁRIOS ====
- 
-GET_USUARIO_POR_EMAIL = "SELECT * FROM usuarios WHERE email = %s"
-GET_USUARIOS_ATIVOS = "SELECT * FROM usuarios WHERE status = 'ativo'"
- 
-INSERT_USUARIO = """
-INSERT INTO usuarios (nome, email, status)
-VALUES (%s, %s, %s)
+
+CREATE_TABLE_PRODUTOS = """
+CREATE TABLE IF NOT EXISTS produtos (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    nome_produto VARCHAR(45) DEFAULT NULL,
+    personalizacao VARCHAR(45) DEFAULT NULL,
+    display VARCHAR(600) DEFAULT NULL,
+    resolucao_display VARCHAR(45) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+    tamanho_display VARCHAR(45) DEFAULT NULL,
+    memoria VARCHAR(45) DEFAULT NULL,
+    sistema_operacional VARCHAR(45) DEFAULT NULL,
+    processador VARCHAR(255) DEFAULT NULL,
+    touchscreen VARCHAR(45) DEFAULT NULL,
+    peso VARCHAR(45) DEFAULT NULL,
+    cor VARCHAR(45) DEFAULT NULL,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 """
- 
+
+# ==== USUÁRIOS ====
+
+GET_USUARIO_POR_ID = "SELECT * FROM usuarios WHERE id = %s"
+
+INSERT_USUARIO = """
+INSERT INTO usuarios (nome, email, username, senha)
+VALUES (%s, %s, %s, %s)
+"""
+
 UPDATE_STATUS_USUARIO = """
 UPDATE usuarios
 SET status = %s
-WHERE email = %s
+WHERE id = %s
 """
- 
-DELETE_USUARIO_POR_EMAIL = "DELETE FROM usuarios WHERE email = %s"
- 
-TRUNCATE_USUARIOS = "TRUNCATE TABLE usuarios"
- 
+
+DELETE_USUARIO_POR_ID = "DELETE FROM usuarios WHERE id = %s"
+
 # ==== PRODUTOS ====
- 
+
 GET_PRODUTO_POR_ID = "SELECT * FROM produtos WHERE id = %s"
- 
-INSERT_PRODUTO = """
-INSERT INTO produtos (nome, preco, estoque)
-VALUES (%s, %s, %s)
+
+INSERT_PRODUTOS_MASSA_TESTE = """
+INSERT INTO produtos (
+    nome_produto, personalizacao, display, resolucao_display, tamanho_display,
+    memoria, sistema_operacional, processador, touchscreen, peso, cor
+) VALUES (
+    "HP PAVILION 15Z TOUCH LAPTOP", "Simplicity", "15.6-inch diagonal Full HD WLED-backlit Display (1920x1080) Touchscreen",
+    "1920x1080", "15.6", "16GB DDR3 - 2 DIMM", "Windows 10", "AMD Quad-Core A10-8700P Processor + AMD Radeon(TM)",
+    "Yes", "4.62 lbs", "Silver"
+);
 """
- 
-UPDATE_ESTOQUE_PRODUTO = """
-UPDATE produtos
-SET estoque = %s
-WHERE id = %s
-"""
- 
-DELETE_PRODUTO = "DELETE FROM produtos WHERE id = %s"
- 
-TRUNCATE_PRODUTOS = "TRUNCATE TABLE produtos"
- 
+
 # ==== PEDIDOS ====
- 
-GET_PEDIDO_POR_ID = "SELECT * FROM pedidos WHERE id = %s"
- 
-INSERT_PEDIDO = """
-INSERT INTO pedidos (usuario_id, total, status)
-VALUES (%s, %s, %s)
-"""
- 
-UPDATE_STATUS_PEDIDO = """
-UPDATE pedidos
-SET status = %s
-WHERE id = %s
-"""
- 
-DELETE_PEDIDO = "DELETE FROM pedidos WHERE id = %s"
- 
-TRUNCATE_PEDIDOS = "TRUNCATE TABLE pedidos"
+
+GET_PEDIDO_POR_ID = "SELECT * FROM pedidos WHERE numero_pedido = %s"
